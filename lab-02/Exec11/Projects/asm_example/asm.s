@@ -11,29 +11,41 @@
 __iar_program_start
         
 ;; main program begins here
-main    MOV R0, #13
+main    MOV R0, #0
         PUSH {R1, R3}
         MOV R1, R0
-        BL fatorial
-fatorial
+        BL Fatorial
+        POP {R1, R3}
+        B Stop
+ 
+;###############################################;
+;                  Fatorial                     ;
+;       - Entrada:      R0                      ;
+;       - Saída:        R0                      ;
+;       - Auxiliares: R1, R3                    ;
+;###############################################;
+Fatorial
         CMP R1, #0              ; -> Usado para apenas evitar o caso de 0!
         ITT EQ                  ; 0! = 1
           MOVEQ R0, #1
-          BEQ Stop
+          BXEQ LR
         SUB R1, #1              ; -> Cria um aux, aux=r0-1, como valor inicial de um fatorial
-fat_diff_zero
+loop_Fatorial
         CBZ R1, Stop
         MULS R0, R1             ; -> r0:=r0*r1
         ADDS R3, R0, R0         ; -> Verefica se o valor atual, contido em r0, multiplicado por 2
-        ITTTT VS                ; var dar overflow - 2 é o "menor" valor a ser multiplicado
+        ITTT VS                 ; var dar overflow - 2 é o "menor" valor a ser multiplicado
           MOVVS R0, #0xFFFF     ; em um fatorial. Se o menor valor estourar nem adianta tentar 
           MOVTVS R0, #0xFFFF    ; outro numero
-          POPVS {R1, R3}
-          BVS Stop
+          BXVS LR
         SUB R1, #1              ; -> Subtrai o valor do aux em 1 para que r0 seja multiplicado pelo mesmo
-        B fat_diff_zero
+        B loop_Fatorial
 Stop
         B Stop
+        
+        
+        
+        
         ;; main program ends here
         ;; Forward declaration of sections.
         SECTION CSTACK:DATA:NOROOT(3)

@@ -21,24 +21,32 @@ __iar_program_start
   
 main    MOV R0, #14
         MOV R1, #13
-        PUSH {R1}
+        PUSH {R1, R3, R4}       ; -> Como descrito na função, os registradores R3 e R4 serão destruidos
         BL Mul16b
-        MOV R0, #0x0001
+        POP {R1, R3, R4}        ; -> Retorna os valores originais dos registradores R3 e R4
+        B Stop
 
+;###############################################;
+;                  Multiplicação                ;
+;       - Entrada:      R0, R1                  ;
+;       - Saída:        R2                      ;
+;       - Auxiliares:   R3, R4                  ;
+;###############################################;
 Mul16b:
         MOV R2, R0
-operacao
-        CMP R1, #0
-        BEQ bla
+loop_Mul16b
+        CMP R1, #0              ; -> se o valor da multiplicação for zero ele retorna
+        BEQ end_Mul16b          ; -> caso r1 seja igual a zero
         LSRS R1, R1, #1         ; -> Deslocando r1 para a direita
         ITT CS                  ; -> So vai realizar a operação de deslocamento de o carry for igual 
           LSLCS R4, R0, R3      ; a 1
           ADDCS R2, R2, R4
         ADD R3, R3, #1          ; -> Valor do expoente s^n
-        B operacao
-bla
+        B loop_Mul16b
+end_Mul16b
         SUBS R2, R0
-        POP {R1}
+        BX LR
+        
 Stop
         B Stop
 

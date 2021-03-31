@@ -23,9 +23,9 @@
 
 if ($debugfile -eq "")
 {
-& "D:\Program Files (x86)\IAR Systems\Embedded Workbench 8.4\common\bin\cspybat" -f "D:\Facul\Micro\ELF52\lab_02\Exec11\Projects\asm_example\settings\asm_example.Debug.general.xcl" --backend -f "D:\Facul\Micro\ELF52\lab_02\Exec11\Projects\asm_example\settings\asm_example.Debug.driver.xcl" 
+& "D:\Program Files (x86)\IAR Systems\Embedded Workbench 8.4\common\bin\cspybat" -f "D:\Facul\Micro\ELF52\lab-02\Exec11\Projects\asm_example\settings\asm_example.Debug.general.xcl" --backend -f "D:\Facul\Micro\ELF52\lab-02\Exec11\Projects\asm_example\settings\asm_example.Debug.driver.xcl" 
 }
 else
 {
-& "D:\Program Files (x86)\IAR Systems\Embedded Workbench 8.4\common\bin\cspybat" -f "D:\Facul\Micro\ELF52\lab_02\Exec11\Projects\asm_example\settings\asm_example.Debug.general.xcl" --debug_file=$debugfile --backend -f "D:\Facul\Micro\ELF52\lab_02\Exec11\Projects\asm_example\settings\asm_example.Debug.driver.xcl" 
+& "D:\Program Files (x86)\IAR Systems\Embedded Workbench 8.4\common\bin\cspybat" -f "D:\Facul\Micro\ELF52\lab-02\Exec11\Projects\asm_example\settings\asm_example.Debug.general.xcl" --debug_file=$debugfile --backend -f "D:\Facul\Micro\ELF52\lab-02\Exec11\Projects\asm_example\settings\asm_example.Debug.driver.xcl" 
 }
