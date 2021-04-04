@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <settings>
     <DebugChecksum>
-        <Checksum>927942362</Checksum>
+        <Checksum>4131066167</Checksum>
     </DebugChecksum>
     <Stack>
         <FillEnabled>0</FillEnabled>
@@ -31,7 +31,6 @@
     </CallStack>
     <Registers>
         <regBase0>R1 10</regBase0>
-        <regBase1>R0 10</regBase1>
     </Registers>
     <InterruptLog>
         <LogEnabled>0</LogEnabled>

@@ -11,11 +11,8 @@
 __iar_program_start
         
 ;; main program begins here
-main    MOV R0, #0
-        PUSH {R1, R3}
-        MOV R1, R0
+main    MOV R0, #13
         BL Fatorial
-        POP {R1, R3}
         B Stop
  
 ;###############################################;
@@ -25,18 +22,24 @@ main    MOV R0, #0
 ;       - Auxiliares: R1, R3                    ;
 ;###############################################;
 Fatorial
+        PUSH {R1, R3}
+        MOV R1, R0
         CMP R1, #0              ; -> Usado para apenas evitar o caso de 0!
-        ITT EQ                  ; 0! = 1
+        ITTT EQ                  ; 0! = 1
           MOVEQ R0, #1
+          POPEQ {R1, R3}
           BXEQ LR
         SUB R1, #1              ; -> Cria um aux, aux=r0-1, como valor inicial de um fatorial
 loop_Fatorial
-        CBZ R1, Stop
+        CMP R1, #1
+        ITT EQ
+          POPEQ {R1, R3}
+          BXEQ LR
         MULS R0, R1             ; -> r0:=r0*r1
         ADDS R3, R0, R0         ; -> Verefica se o valor atual, contido em r0, multiplicado por 2
         ITTT VS                 ; var dar overflow - 2 é o "menor" valor a ser multiplicado
-          MOVVS R0, #0xFFFF     ; em um fatorial. Se o menor valor estourar nem adianta tentar 
-          MOVTVS R0, #0xFFFF    ; outro numero
+          MOVVS R0, #-1         ; -> O valor de R0 fica em -1, pois "estoura" o limite de 32 bits
+          POPVS {R1, R3}
           BXVS LR
         SUB R1, #1              ; -> Subtrai o valor do aux em 1 para que r0 seja multiplicado pelo mesmo
         B loop_Fatorial

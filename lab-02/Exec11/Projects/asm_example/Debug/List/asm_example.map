@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR ELF Linker V8.50.9.278/W32 for ARM                  31/Mar/2021  07:59:03
+# IAR ELF Linker V8.50.9.278/W32 for ARM                  04/Apr/2021  08:38:14
 # Copyright 2007-2020 IAR Systems AB.
 #
 #    Output file  =
@@ -8,7 +8,7 @@
 #    Map file     =
 #        D:\Facul\Micro\ELF52\lab-02\Exec11\Projects\asm_example\Debug\List\asm_example.map
 #    Command line =
-#        -f C:\Users\USURIO~2\AppData\Local\Temp\EW48AC.tmp
+#        -f C:\Users\USURIO~2\AppData\Local\Temp\EWA2AD.tmp
 #        (D:\Facul\Micro\ELF52\lab-02\Exec11\Projects\asm_example\Debug\Obj\asm.o
 #        --no_out_extension -o
 #        D:\Facul\Micro\ELF52\lab-02\Exec11\Projects\asm_example\Debug\Exe\asm_example.out
@@ -44,10 +44,10 @@ No sections matched the following patterns:
   .intvec   ro code          0x0   0x40  asm.o [1]
                           - 0x40   0x40
 
-"P1":                              0x38
-  .text     ro code         0x40   0x36  asm.o [1]
-  .text     ro code         0x76    0x2  asm.o [1]
-                          - 0x78   0x38
+"P1":                              0x3c
+  .text     ro code         0x40   0x3a  asm.o [1]
+  .text     ro code         0x7a    0x2  asm.o [1]
+                          - 0x7c   0x3c
 
 "P2":                             0x400
   CSTACK             0x2000'0000  0x400  <Block>
@@ -58,7 +58,7 @@ Unused ranges:
 
          From           To      Size
          ----           --      ----
-         0x78     0x7'ffff  0x7'ff88
+         0x7c     0x7'ffff  0x7'ff84
   0x2000'0400  0x2000'ffff    0xfc00
 
 
@@ -74,13 +74,13 @@ command line/config:
     Total:
 
 D:\Facul\Micro\ELF52\lab-02\Exec11\Projects\asm_example\Debug\Obj: [1]
-    asm.o               120
+    asm.o               124
     --------------------------------
-    Total:              120
+    Total:              124
 
     Linker created             1'024
 ------------------------------------
-    Grand Total:        120    1'024
+    Grand Total:        124    1'024
 
 
 *******************************************************************************
@@ -97,7 +97,7 @@ __vector_table               0x0        Data  Gb  asm.o [1]
 
 [1] = D:\Facul\Micro\ELF52\lab-02\Exec11\Projects\asm_example\Debug\Obj
 
-    120 bytes of readonly  code memory
+    124 bytes of readonly  code memory
   1'024 bytes of readwrite data memory
 
 Errors: none
