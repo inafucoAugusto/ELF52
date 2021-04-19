@@ -61,227 +61,11 @@ main    MOV R0, #(PORTN_BIT)
                                         ; aqui vc passa os mesmos bits que estarao abilitados na sua porta
         MOV R2, #000000001b             ; padrão de acionamento    -> os valores que quer escrever nesses bits
 
-
+        MOV R3, #0b
 loop:   
-        ; 1
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        MOV R2, #(LEDN_1)
-        BL Digital_write
-        BL Delay                        ; atraso (determina frequência de acionamento)
-        BL Digital_write_low
         
-        ;; 2
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        MOV R2, #(LEDN_2)
-        BL Digital_write
-        BL Delay                        ; atraso (determina frequência de acionamento)
-        BL Digital_write_low
-        
-        ;; 3
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        MOV R2, #(LEDN_1)
-        ORR R2, #(LEDN_2)
-        BL Digital_write
-        BL Digital_write
-        BL Delay                        ; atraso (determina frequência de acionamento)
-        BL Digital_write_low
-        
-        ;; 4
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        MOV R2, #(LEDF_1)
-        BL Digital_write
-        BL Delay                        ; atraso (determina frequência de acionamento)
-        BL Digital_write_low
-        
-        ;; 5
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        MOV R2, #(LEDN_1)
-        BL Digital_write
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        MOV R2, #(LEDF_1)
-        BL Digital_write
-        BL Delay                        ; atraso (determina frequência de acionamento)
-        BL Digital_write_low
-        
-        ;; 6
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        MOV R2, #(LEDN_2)
-        BL Digital_write
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        MOV R2, #(LEDF_1)
-        BL Digital_write
-        BL Delay                        ; atraso (determina frequência de acionamento)
-        BL Digital_write_low
-        
-        ;; 7
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        MOV R2, #(LEDN_1)
-        ORR R2, #(LEDN_2)
-        BL Digital_write
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        MOV R2, #(LEDF_1)
-        BL Digital_write
-        BL Delay                        ; atraso (determina frequência de acionamento)
-        
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        BL Digital_write_low
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        BL Digital_write_low
-        
-        ;; 8
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        MOV R2, #(LEDF_2)
-        BL Digital_write
-        BL Delay                        ; atraso (determina frequência de acionamento)
-        
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        BL Digital_write_low
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        BL Digital_write_low
-
-        ;; 9
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        MOV R2, #(LEDN_1)
-        BL Digital_write
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        MOV R2, #(LEDF_2)
-        BL Digital_write
-        BL Delay                        ; atraso (determina frequência de acionamento)
-        
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        BL Digital_write_low
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        BL Digital_write_low
-        
-        ;; 10
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        MOV R2, #(LEDN_2)
-        BL Digital_write
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        MOV R2, #(LEDF_2)
-        BL Digital_write
-        BL Delay                        ; atraso (determina frequência de acionamento)
-        
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        BL Digital_write_low
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        BL Digital_write_low
-        
-        ;; 11
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        MOV R2, #(LEDN_2)
-        ORR R2, #(LEDN_1)
-        BL Digital_write
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        MOV R2, #(LEDF_2)
-        BL Digital_write
-        BL Delay                        ; atraso (determina frequência de acionamento)
-        
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        BL Digital_write_low
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        BL Digital_write_low
-
-        ;; 12
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        MOV R2, #(LEDF_1)
-        ORR R2, #(LEDF_2)
-        BL Digital_write
-        BL Delay                        ; atraso (determina frequência de acionamento)
-        
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        BL Digital_write_low
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        BL Digital_write_low
-        
-        ;; 13
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        MOV R2, #(LEDN_1)
-        BL Digital_write
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        MOV R2, #(LEDF_1)
-        ORR R2, #(LEDF_2)
-        BL Digital_write
-        BL Delay                        ; atraso (determina frequência de acionamento)
-        
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        BL Digital_write_low
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        BL Digital_write_low
-        
-        ;; 14
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        ORR R2, #(LEDN_2)
-        BL Digital_write
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        MOV R2, #(LEDF_1)
-        ORR R2, #(LEDF_2)
-        BL Digital_write
-        BL Delay                        ; atraso (determina frequência de acionamento)
-        
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        BL Digital_write_low
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        BL Digital_write_low
-        
-        ;; 15
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        MOV R2, #(LEDN_1)
-        ORR R2, #(LEDN_2)
-        BL Digital_write
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        MOV R2, #(LEDF_1)
-        ORR R2, #(LEDF_2)
-        BL Digital_write
-        BL Delay                        ; atraso (determina frequência de acionamento)
-        
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        BL Digital_write_low
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        BL Digital_write_low
-  
+        ADD R3, R3, #1
+        Bl binary_led
         B loop
 
 
@@ -360,6 +144,40 @@ Delay_loop
 finish_daley:
         POP {R0}
         BX LR
+        
+;===============================================================================;
+;       -> Liga os leds no valor binario                                        ;
+;       -> Input: R3                                                            ;
+;       -> Liga os leds no valor binario                                        ;
+;       -> Liga os leds no valor binario                                        ;
+;===============================================================================;
+binary_led:
+        ;; leds da porta n
+        PUSH {LR, R2, R4}
+        AND R2, R3, #0011b
+        LSR R4, R2, #1
+        LSL R2, R2, #1
+        ADD R2, R4
+        LDR R0, =GPIO_PORTN_BASE
+        MOV R1, #000000011b
+        BL Digital_write
+        
+
+        ;; leds da porta f
+        AND R4, R3, #0100b
+        LSL R2, R4, #2
+        AND R4, R3, #1000b
+        LSR R4, R4, #3
+        ADD R2, R4
+        
+        LDR R0, =GPIO_PORTF_BASE
+        MOV R1, #000010001b
+        BL Digital_write
+        POP {R4, R2}
+        BL Delay
+        POP {LR}
+        BX LR
+        
         
 
         ;; Forward declaration of sections.

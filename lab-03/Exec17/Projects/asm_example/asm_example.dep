@@ -5,27 +5,18 @@
     <configuration>
         <name>Debug</name>
         <outputs>
-            <file>$PROJ_DIR$\Debug\Obj\asm_example.o</file>
             <file>$TOOLKIT_DIR$\config\linker\TexasInstruments\TM4C1294NC.icf</file>
-            <file>$PROJ_DIR$\src\asm_example.s</file>
             <file>$PROJ_DIR$\Debug\Exe\asm_example.out</file>
             <file>$PROJ_DIR$\Debug\List\asm_example.map</file>
+            <file>$PROJ_DIR$\Debug\Obj\asm_example.o</file>
+            <file>$PROJ_DIR$\src\asm_example.s</file>
         </outputs>
         <file>
             <name>[ROOT_NODE]</name>
             <outputs>
                 <tool>
                     <name>ILINK</name>
-                    <file> 3 4</file>
-                </tool>
-            </outputs>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\src\asm_example.s</name>
-            <outputs>
-                <tool>
-                    <name>AARM</name>
-                    <file> 0</file>
+                    <file> 1 2</file>
                 </tool>
             </outputs>
         </file>
@@ -34,15 +25,24 @@
             <outputs>
                 <tool>
                     <name>ILINK</name>
-                    <file> 4</file>
+                    <file> 2</file>
                 </tool>
             </outputs>
             <inputs>
                 <tool>
                     <name>ILINK</name>
-                    <file> 1 0</file>
+                    <file> 0 3</file>
                 </tool>
             </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\src\asm_example.s</name>
+            <outputs>
+                <tool>
+                    <name>AARM</name>
+                    <file> 3</file>
+                </tool>
+            </outputs>
         </file>
     </configuration>
     <configuration>
