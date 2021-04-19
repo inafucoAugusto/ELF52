@@ -10,8 +10,7 @@
 
 ;========================================================================;
 ;       - Os registradores das portas sao acessados por meio de LDR e STR
-;       https://www.ic.unicamp.br/~celio/mc404-2013/armhomepage.html
-; tabela 10-7 pagina 757
+;       - tabela 10-7 pagina 757
 
 SYSCTL_RCGCGPIO_R       EQU     0x400FE608              ; Run-mode Clock Gating -> Inicializacao -> Habilita clock
 SYSCTL_PRGPIO_R         EQU     0x400FEA08              ; Peripheral Ready      -> Inicializacao -> Indica se a porta GPIO está pronta para uso
@@ -23,9 +22,9 @@ PORTN_BIT               EQU     0001000000000000b       ; Define que pode se esc
 GPIO_PORTF_BASE    	EQU     0x4005D000
 GPIO_PORTJ_BASE    	EQU     0x40060000
 GPIO_PORTN_BASE    	EQU     0x40064000
-GPIO_DIR                EQU     0x0400          ; GPIO_DIR (Direction) -> entrada ou saida
+GPIO_DIR                EQU     0x0400                  ; GPIO_DIR (Direction) -> entrada ou saida
 GPIO_PUR                EQU     0x0510  
-GPIO_DEN                EQU     0x051C          ; GPIO_DEN (Digital Enable) -> Habilitar funcao digital
+GPIO_DEN                EQU     0x051C                  ; GPIO_DEN (Digital Enable) -> Habilitar funcao digital
 
 ; Bits para controle dos leds
 LEDN_1                   EQU     00010b
@@ -40,129 +39,63 @@ __iar_program_start
         
 ;; main program begins here
 main    MOV R0, #(PORTN_BIT)
-        BL Enable_port                  ; habilita a porta n
+        BL Enable_port                                  ; habilita a porta n
 
         MOV R0, #(PORTF_BIT)
-        BL Enable_port                  ; habilita a portra f
+        BL Enable_port                                  ; habilita a portra f
 
         MOV R0, #(PORTJ_BIT)
-        BL Enable_port                  ; habilita a portra j
+        BL Enable_port                                  ; habilita a portra j
 
-        LDR R0, =GPIO_PORTN_BASE        ; Endereço de memoria base da porta N
-        MOV R1, #000000011b             ; bits a seram habilitados da porta N    
-        BL Enable_GPIO_output           ; habilita os bits 0 e 1 da porta N
+        LDR R0, =GPIO_PORTN_BASE                        ; Endereço de memoria base da porta N
+        MOV R1, #000000011b                             ; bits a seram habilitados da porta N    
+        BL Enable_GPIO_output                           ; habilita os bits 0 e 1 da porta N
         BL Digital_write_low
 
-        LDR R0, =GPIO_PORTF_BASE        ; Endereço de memoria base da porta J
-        MOV R1, #000010001b             ; bits a seram habilitados da porta J    
-        BL Enable_GPIO_output           ; habilita os bits 0 e 4 da porta J
+        LDR R0, =GPIO_PORTF_BASE                        ; Endereço de memoria base da porta J
+        MOV R1, #000010001b                             ; bits a seram habilitados da porta J    
+        BL Enable_GPIO_output                           ; habilita os bits 0 e 4 da porta J
         BL Digital_write_low
 
-        LDR R0, =GPIO_PORTJ_BASE        ; Endereço de memoria base da porta J
-        MOV R1, #000000011b             ; bits a seram habilitados da porta J    
-        BL Enable_digital_input         ; habilita os bits 0 e 4 da porta J
+        LDR R0, =GPIO_PORTJ_BASE                        ; Endereço de memoria base da porta J
+        MOV R1, #000000011b                             ; bits a seram habilitados da porta J    
+        BL Enable_digital_input                         ; habilita os bits 0 e 4 da porta J
         BL Digital_write_low
       
-        MOV R3, #0                      ; Variavel usada como contador
-
-        LDR R0, =GPIO_PORTN_BASE        ; linha repetida
-        MOV R1, #000000011b             ; máscara dos LEDs D1 e D2 -> indica que apenas os bits 0x0011b do registrador poderao ser usados
-                                        ; aqui vc passa os mesmos bits que estarao abilitados na sua porta
-        MOV R2, #000000001b             ; padrão de acionamento    -> os valores que quer escrever nesses bits
-
+        MOV R3, #0                                      ; Variavel usada como contador
 
 loop:   
         LDR R0, =GPIO_PORTJ_BASE
         MOV R1, #000000011b
         BL Digital_read 
         
-        CMP R2, #000000001b             ; -> le o botao PJ0 e se estiver pressionado adiciona um na variavel
+        CMP R2, #000000001b                             ; -> le o botao PJ0 e se estiver pressionado adiciona um na variavel
         IT EQ
           ADDEQ R3, R3, #1b
           
-        CMP R2, #000000010b             ; -> le o botao PJ1 e se estiver pressionado subtrai um na variavel
+        CMP R2, #000000010b                             ; -> le o botao PJ1 e se estiver pressionado subtrai um na variavel
         IT EQ
           SUBEQ R3, R3, #1b
-         
-        CMP R3, #1                      ; -> le o botao PJ1 e se estiver pressionado subtrai um na variavel
-        IT EQ
-          BLEQ Bin_1
 
-        CMP R3, #2                      ; -> le o botao PJ1 e se estiver pressionado subtrai um na variavel
-        IT EQ
-          BLEQ Bin_2
-          
-        CMP R3, #3                      ; -> le o botao PJ1 e se estiver pressionado subtrai um na variavel
-        IT EQ
-          BLEQ Bin_3
-          
-        CMP R3, #4                      ; -> le o botao PJ1 e se estiver pressionado subtrai um na variavel
-        IT EQ
-          BLEQ Bin_4
-          
-        CMP R3, #5                      ; -> le o botao PJ1 e se estiver pressionado subtrai um na variavel
-        IT EQ
-          BLEQ Bin_5
-          
-        CMP R3, #6                      ; -> le o botao PJ1 e se estiver pressionado subtrai um na variavel
-        IT EQ
-          BLEQ Bin_6
-          
-        CMP R3, #7                      ; -> le o botao PJ1 e se estiver pressionado subtrai um na variavel
-        IT EQ
-          BLEQ Bin_7
-         
-        CMP R3, #8                      ; -> le o botao PJ1 e se estiver pressionado subtrai um na variavel
-        IT EQ
-          BLEQ Bin_8
-          
-        CMP R3, #9                      ; -> le o botao PJ1 e se estiver pressionado subtrai um na variavel
-        IT EQ
-          BLEQ Bin_9
-          
-        CMP R3, #10                      ; -> le o botao PJ1 e se estiver pressionado subtrai um na variavel
-        IT EQ
-          BLEQ Bin_10
-          
-        CMP R3, #11                      ; -> le o botao PJ1 e se estiver pressionado subtrai um na variavel
-        IT EQ
-          BLEQ Bin_11
-          
-        CMP R3, #12                      ; -> le o botao PJ1 e se estiver pressionado subtrai um na variavel
-        IT EQ
-          BLEQ Bin_12
-          
-        CMP R3, #13                      ; -> le o botao PJ1 e se estiver pressionado subtrai um na variavel
-        IT EQ
-          BLEQ Bin_13
-        
-        CMP R3, #14                      ; -> le o botao PJ1 e se estiver pressionado subtrai um na variavel
-        IT EQ
-          BLEQ Bin_14
-        
-        CMP R3, #15                      ; -> le o botao PJ1 e se estiver pressionado subtrai um na variavel
-        IT EQ
-          BLEQ Bin_15
-          
+        BL binary_led
         B loop
-         
 
 ;=======================================================;
 ;       -> Habilita o GPIO que estiver na porta R0      ;
 ;       -> Input: R0, R1                                ;
 ;       -> Aux:   R2                                    ;
 ;=======================================================;
-Enable_port:                            ; -> habilita o GPIO da porta R0 
-        LDR R2, =SYSCTL_RCGCGPIO_R      ; carrega o valor de SYSCTL_RCGCGPIO_R em R2
-        LDR R1, [R2]                    ; carrega o valor que R2 "aponta" em R1
-        ORR R1, R0                      ; operação de OU com R1 e R0
-        STR R1, [R2]                    ; carrega o valor de R1 em R2
+Enable_port:                                            ; -> habilita o GPIO da porta R0 
+        LDR R2, =SYSCTL_RCGCGPIO_R                      ; carrega o valor de SYSCTL_RCGCGPIO_R em R2
+        LDR R1, [R2]                                    ; carrega o valor que R2 "aponta" em R1
+        ORR R1, R0                                      ; operação de OU com R1 e R0
+        STR R1, [R2]                                    ; carrega o valor de R1 em R2
 check      
-        LDR R2, =SYSCTL_PRGPIO_R        ; carrega SYSCTL_PRGPIO_R em R2
-        LDR R1, [R2]                    ; carrega o valor que R2 "aponta" em R1
-        TST R1, R0                      ; verifica se o clock esta ativo
-        BEQ check                       ; se ainda nao estiver ativo volta para check
-        BX LR                           ; se estiver volta para chamada
+        LDR R2, =SYSCTL_PRGPIO_R                        ; carrega SYSCTL_PRGPIO_R em R2
+        LDR R1, [R2]                                    ; carrega o valor que R2 "aponta" em R1
+        TST R1, R0                                      ; verifica se o clock esta ativo
+        BEQ check                                       ; se ainda nao estiver ativo volta para check
+        BX LR                                           ; se estiver volta para chamada
 
 ;===============================================================================;
 ;       -> Habilita o GPIO que estiver na porta R0                              ;
@@ -172,13 +105,13 @@ check
 ;       -> Aux:   R2                                                            ;
 ;===============================================================================;
 Enable_GPIO_output:
-        LDR R2, [R0, #GPIO_DIR]         ; R2 = [R0 + #GPIO_DIR]
-        ORR R2, R1                      ; R2 ou R1 e salva em R2
-        STR R2, [R0, #GPIO_DIR]         ; [R0 + #GPIO_DIR] = R2 
+        LDR R2, [R0, #GPIO_DIR]                         ; R2 = [R0 + #GPIO_DIR]
+        ORR R2, R1                                      ; R2 ou R1 e salva em R2
+        STR R2, [R0, #GPIO_DIR]                         ; [R0 + #GPIO_DIR] = R2 
         
-        LDR R2, [R0, #GPIO_DEN]         ; R2 = [R0 + #GPIO_DEN]
-        ORR R2, R1                      ; R2 ou R1 e salva em R2
-        STR R2, [R0, #GPIO_DEN]         ; [R0 + #GP IO_DEN] = R2 
+        LDR R2, [R0, #GPIO_DEN]                         ; R2 = [R0 + #GPIO_DEN]
+        ORR R2, R1                                      ; R2 ou R1 e salva em R2
+        STR R2, [R0, #GPIO_DEN]                         ; [R0 + #GP IO_DEN] = R2 
         BX LR
 
 ;===============================================================================;
@@ -189,19 +122,18 @@ Enable_GPIO_output:
 ;===============================================================================;
 Enable_digital_input:
         LDR R2, [R0, #GPIO_DIR]
-	BIC R2, R1                      ; configura bits de entrada
+	BIC R2, R1                                      ; configura bits de entrada
 	STR R2, [R0, #GPIO_DIR]
 
 	LDR R2, [R0, #GPIO_DEN]
-	ORR R2, R1                      ; declara função como digital
+	ORR R2, R1                                      ; declara função como digital
 	STR R2, [R0, #GPIO_DEN]
 
 	LDR R2, [R0, #GPIO_PUR]
-	ORR R2, R1                      ; "ativa" resitor de pull-up
+	ORR R2, R1                                      ; "ativa" resitor de pull-up
 	STR R2, [R0, #GPIO_PUR]
         BX LR
 
-        
 ;===============================================================================;
 ;       -> Escreve a saida digital na porta R0                                  ;
 ;       -> Input: R0, R1, R2                                                    ;
@@ -220,7 +152,7 @@ Digital_write:
 ;          R1 -> contem os bits da porta que poderam ser acessados - "mascara"  ; 
 ;===============================================================================;
 Digital_read:
-        STR R2, [R0, R1, LSL #2]
+        LDR  R2, [R0, R1, LSL #2]
         BX LR
         
  ;===============================================================================;
@@ -255,273 +187,37 @@ finish_daley:
 
 ;===============================================================================;
 ;       -> Liga os leds no valor binario                                        ;
+;       -> Input: R3                                                            ;
+;       -> Liga os leds no valor binario                                        ;
+;       -> Liga os leds no valor binario                                        ;
 ;===============================================================================;
-Bin_1:
-        PUSH {LR}
+binary_led:
+        ;; leds da porta n
+        PUSH {LR, R2, R4}
+        AND R2, R3, #0011b
+        LSR R4, R2, #1
+        LSL R2, R2, #1
+        ADD R2, R4
         LDR R0, =GPIO_PORTN_BASE
         MOV R1, #000000011b
-        MOV R2, #(LEDN_1)
         BL Digital_write
-        BL Delay                        ; atraso (determina frequência de acionamento)
-        BL Digital_write_low
-        POP {LR}
-        BX LR
-        
-Bin_2:
-        PUSH {LR}
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        MOV R2, #(LEDN_2)
-        BL Digital_write
-        BL Delay                        ; atraso (determina frequência de acionamento)
-        BL Digital_write_low
-        POP {LR}
-        BX LR
-        
-Bin_3:
-        PUSH {LR}
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        MOV R2, #(LEDN_1)
-        ORR R2, #(LEDN_2)
-        BL Digital_write
-        BL Digital_write
-        BL Delay                        ; atraso (determina frequência de acionamento)
-        BL Digital_write_low
-        POP {LR}
-        BX LR
-        
-Bin_4:
-        PUSH {LR}
+
+        ;; leds da porta f
+        AND R4, R3, #0100b
+        LSL R2, R4, #2
+        AND R4, R3, #1000b
+        LSR R4, R4, #3
+        ADD R2, R4
+
         LDR R0, =GPIO_PORTF_BASE
         MOV R1, #000010001b
-        MOV R2, #(LEDF_1)
         BL Digital_write
-        BL Delay                        ; atraso (determina frequência de acionamento)
-        BL Digital_write_low
-        POP {LR}
-        BX LR
-        
-Bin_5:
-        PUSH {LR}
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        MOV R2, #(LEDN_1)
-        BL Digital_write
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        MOV R2, #(LEDF_1)
-        BL Digital_write
-        BL Delay                        ; atraso (determina frequência de acionamento)
-        BL Digital_write_low
-        POP {LR}
-        BX LR
-        
-Bin_6:
-        PUSH {LR}
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        MOV R2, #(LEDN_2)
-        BL Digital_write
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        MOV R2, #(LEDF_1)
-        BL Digital_write
-        BL Delay                        ; atraso (determina frequência de acionamento)
-        BL Digital_write_low
-        POP {LR}
-        BX LR
-        
-Bin_7:
-        PUSH {LR}
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        MOV R2, #(LEDN_1)
-        ORR R2, #(LEDN_2)
-        BL Digital_write
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        MOV R2, #(LEDF_1)
-        BL Digital_write
-        BL Delay                        ; atraso (determina frequência de acionamento)
-        
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        BL Digital_write_low
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        BL Digital_write_low
-        POP {LR}
-        BX LR
-        
-Bin_8:
-        PUSH {LR}
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        MOV R2, #(LEDF_2)
-        BL Digital_write
-        BL Delay                        ; atraso (determina frequência de acionamento)
-        
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        BL Digital_write_low
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        BL Digital_write_low
+        POP {R4, R2}
+        BL Delay
         POP {LR}
         BX LR
 
-Bin_9:
-        PUSH {LR}
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        MOV R2, #(LEDN_1)
-        BL Digital_write
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        MOV R2, #(LEDF_2)
-        BL Digital_write
-        BL Delay                        ; atraso (determina frequência de acionamento)
-        
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        BL Digital_write_low
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        BL Digital_write_low
-        POP {LR}
-        BX LR
-        
-Bin_10:
-        PUSH {LR}
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        MOV R2, #(LEDN_2)
-        BL Digital_write
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        MOV R2, #(LEDF_2)
-        BL Digital_write
-        BL Delay                        ; atraso (determina frequência de acionamento)
-        
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        BL Digital_write_low
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        BL Digital_write_low
-        POP {LR}
-        BX LR
-        
-Bin_11:
-        PUSH {LR}
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        MOV R2, #(LEDN_2)
-        ORR R2, #(LEDN_1)
-        BL Digital_write
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        MOV R2, #(LEDF_2)
-        BL Digital_write
-        BL Delay                        ; atraso (determina frequência de acionamento)
-        
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        BL Digital_write_low
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        BL Digital_write_low
-        POP {LR}
-        BX LR
 
-Bin_12:
-        PUSH {LR}
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        MOV R2, #(LEDF_1)
-        ORR R2, #(LEDF_2)
-        BL Digital_write
-        BL Delay                        ; atraso (determina frequência de acionamento)
-        
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        BL Digital_write_low
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        BL Digital_write_low
-        POP {LR}
-        BX LR
-        
-Bin_13:
-        PUSH {LR}
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        MOV R2, #(LEDN_1)
-        BL Digital_write
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        MOV R2, #(LEDF_1)
-        ORR R2, #(LEDF_2)
-        BL Digital_write
-        BL Delay                        ; atraso (determina frequência de acionamento)
-        
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        BL Digital_write_low
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        BL Digital_write_low
-        POP {LR}
-        BX LR
-        
-Bin_14:
-        PUSH {LR}
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        ORR R2, #(LEDN_2)
-        BL Digital_write
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        MOV R2, #(LEDF_1)
-        ORR R2, #(LEDF_2)
-        BL Digital_write
-        BL Delay                        ; atraso (determina frequência de acionamento)
-        
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        BL Digital_write_low
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        BL Digital_write_low
-        POP {LR}
-        BX LR
-        
-Bin_15:
-        PUSH {LR}
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        MOV R2, #(LEDN_1)
-        ORR R2, #(LEDN_2)
-        PUSH {LR}
-        BL Digital_write
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        MOV R2, #(LEDF_1)
-        ORR R2, #(LEDF_2)
-        BL Digital_write
-        BL Delay                        ; atraso (determina frequência de acionamento)
-        
-        LDR R0, =GPIO_PORTN_BASE
-        MOV R1, #000000011b
-        BL Digital_write_low
-        LDR R0, =GPIO_PORTF_BASE
-        MOV R1, #000010001b
-        BL Digital_write_low
-        POP {LR}
-        BX LR
-  
-       
 
         ;; Forward declaration of sections.
         SECTION CSTACK:DATA:NOROOT(3)

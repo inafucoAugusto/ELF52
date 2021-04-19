@@ -55,12 +55,6 @@ main    MOV R0, #(PORTN_BIT)
         BL Enable_GPIO_output           ; habilita os bits 0 e 4 da porta J
         BL Digital_write_low
         
-        
-        LDR R0, =GPIO_PORTN_BASE        ; linha repetida
-        MOV R1, #000000011b             ; máscara dos LEDs D1 e D2 -> indica que apenas os bits 0x0011b do registrador poderao ser usados
-                                        ; aqui vc passa os mesmos bits que estarao abilitados na sua porta
-        MOV R2, #000000001b             ; padrão de acionamento    -> os valores que quer escrever nesses bits
-
         MOV R3, #0b
 loop:   
         

@@ -1,20 +1,20 @@
 ###############################################################################
 #
-# IAR ELF Linker V8.50.9.278/W32 for ARM                  16/Apr/2021  14:41:51
+# IAR ELF Linker V8.50.9.278/W32 for ARM                  19/Apr/2021  20:49:47
 # Copyright 2007-2020 IAR Systems AB.
 #
 #    Output file  =
-#        D:\Facul\Micro\ELF52\lab-03\Exec11\Projects\asm_example\Debug\Exe\asm_example.out
+#        D:\Facul\Micro\ELF52\lab-03\Exec18\Projects\asm_example\Debug\Exe\asm_example.out
 #    Map file     =
-#        D:\Facul\Micro\ELF52\lab-03\Exec11\Projects\asm_example\Debug\List\asm_example.map
+#        D:\Facul\Micro\ELF52\lab-03\Exec18\Projects\asm_example\Debug\List\asm_example.map
 #    Command line =
-#        -f C:\Users\USURIO~2\AppData\Local\Temp\EWA8DC.tmp
-#        (D:\Facul\Micro\ELF52\lab-03\Exec11\Projects\asm_example\Debug\Obj\asm_example.o
+#        -f C:\Users\USURIO~2\AppData\Local\Temp\EWB367.tmp
+#        (D:\Facul\Micro\ELF52\lab-03\Exec18\Projects\asm_example\Debug\Obj\asm_example.o
 #        --no_out_extension -o
-#        D:\Facul\Micro\ELF52\lab-03\Exec11\Projects\asm_example\Debug\Exe\asm_example.out
+#        D:\Facul\Micro\ELF52\lab-03\Exec18\Projects\asm_example\Debug\Exe\asm_example.out
 #        --redirect _Printf=_PrintfFullNoMb --redirect _Scanf=_ScanfFullNoMb
 #        --map
-#        D:\Facul\Micro\ELF52\lab-03\Exec11\Projects\asm_example\Debug\List\asm_example.map
+#        D:\Facul\Micro\ELF52\lab-03\Exec18\Projects\asm_example\Debug\List\asm_example.map
 #        --config "D:\Program Files (x86)\IAR Systems\Embedded Workbench
 #        8.4\arm\config\linker\TexasInstruments\TM4C1294NC.icf" --semihosting
 #        --no_library_search --entry __iar_program_start --vfe --text_out
@@ -44,10 +44,10 @@ No sections matched the following patterns:
   .intvec   ro code          0x0    0x40  asm_example.o [1]
                           - 0x40    0x40
 
-"P1":                              0x31a
-  .text     ro code         0x40   0x318  asm_example.o [1]
-  .text     ro code        0x358     0x2  asm_example.o [1]
-                         - 0x35a   0x31a
+"P1":                              0x13a
+  .text     ro code         0x40   0x138  asm_example.o [1]
+  .text     ro code        0x178     0x2  asm_example.o [1]
+                         - 0x17a   0x13a
 
 "P2":                             0x8000
   CSTACK             0x2000'0000  0x8000  <Block>
@@ -58,7 +58,7 @@ Unused ranges:
 
          From           To      Size
          ----           --      ----
-        0x35a     0xf'ffff  0xf'fca6
+        0x17a     0xf'ffff  0xf'fe86
   0x2000'8000  0x2003'ffff  0x3'8000
 
 
@@ -73,14 +73,14 @@ command line/config:
     --------------------------------
     Total:
 
-D:\Facul\Micro\ELF52\lab-03\Exec11\Projects\asm_example\Debug\Obj: [1]
-    asm_example.o       858
+D:\Facul\Micro\ELF52\lab-03\Exec18\Projects\asm_example\Debug\Obj: [1]
+    asm_example.o       378
     --------------------------------
-    Total:              858
+    Total:              378
 
     Linker created            32'768
 ------------------------------------
-    Grand Total:        858   32'768
+    Grand Total:        378   32'768
 
 
 *******************************************************************************
@@ -95,9 +95,9 @@ __iar_program_start         0x41        Code  Gb  asm_example.o [1]
 __vector_table               0x0        Data  Gb  asm_example.o [1]
 
 
-[1] = D:\Facul\Micro\ELF52\lab-03\Exec11\Projects\asm_example\Debug\Obj
+[1] = D:\Facul\Micro\ELF52\lab-03\Exec18\Projects\asm_example\Debug\Obj
 
-     858 bytes of readonly  code memory
+     378 bytes of readonly  code memory
   32'768 bytes of readwrite data memory
 
 Errors: none

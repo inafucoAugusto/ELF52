@@ -5,25 +5,25 @@
     <configuration>
         <name>Debug</name>
         <outputs>
-            <file>$PROJ_DIR$\Debug\Exe\load_store.out</file>
             <file>$PROJ_DIR$\src\load_store.s</file>
+            <file>$PROJ_DIR$\Debug\Exe\load_store.out</file>
             <file>$PROJ_DIR$\Debug\Obj\load_store.o</file>
         </outputs>
+        <file>
+            <name>[ROOT_NODE]</name>
+            <outputs>
+                <tool>
+                    <name>ILINK</name>
+                    <file> 1</file>
+                </tool>
+            </outputs>
+        </file>
         <file>
             <name>$PROJ_DIR$\src\load_store.s</name>
             <outputs>
                 <tool>
                     <name>AARM</name>
                     <file> 2</file>
-                </tool>
-            </outputs>
-        </file>
-        <file>
-            <name>[ROOT_NODE]</name>
-            <outputs>
-                <tool>
-                    <name>ILINK</name>
-                    <file> 0</file>
                 </tool>
             </outputs>
         </file>
