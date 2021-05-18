@@ -71,15 +71,6 @@ DELAY                    EQU     0x005F                 ; tempo de delay
 
 __iar_program_start
 
-;; ideias
-;; - r3 tem primeiro numero
-;; - r4 tem a operação
-;; - r5 tem o segundo numero
-;; func para realzir operação e jogar direto no terminal, usar p9lha para alocar memoresa
-;; - r6 como aux para saber expoente do numero
-;; - r10 -> conta quantos digito tem essa porra
-;; - r11 -> flag aux para positivo e div por zero -> 1 negativo, 2 -> div por zero
-
 main:   
         MOV R2, #(UART0_BIT)
 	BL UART_enable                                  ; habilita UART0
@@ -99,56 +90,96 @@ main:
         BL UART_config                                  ; configura periférico UART0
 
         LDR R0, =UART_PORT0_BASE                        ; nao lembro para o que servia
-        
                                                         ; recepção e envio de dados pela UART utilizando sondagem (polling)
                                                         ; resulta em um "eco": dados recebidos são retransmitidos pela UART
 loop:
         BL Reset_all
 Make_num1:
-        BL Serial_read
-        MOV R6, R3
+        BL Serial_read                                  ; le a serial e salva o valor em r1
+        MOV R6, R3                                      ; r6 = r3
         
-        CMP R1, #61
-        IT NE
-          BLNE Serial_write
-        ITT EQ
+        CMP R1, #67                                    ; se a entrada for C finaliza a operação
+        ITTT EQ
+          BLEQ Serial_write
+          BLEQ New_line
+          BEQ loop
+        
+        CMP R1, #61                                     ; verifica se 61 é sinal de =
+        ITT EQ                                          ; se não for igual escreve o valor na serial
           BLEQ New_line
           BEQ loop
           
-        BL Check_operation                               
-        CMP R4, #0
-        ITT HI
-        MOVHI R10, #0
-        BHI Make_num2
+        BL Check_operation                              ; verefica se está recebendo um operando                               
+        CMP R4, #0                                      ; se estiver, finaliza num1, salva a operacao em r4
+        ITTT HI                                         ; e monta o numero 2
+          MOVHI R10, #0
+          BLHI Serial_write
+          BHI Make_num2
         
-        CMP R10, #4                                      ; menor que 4 digitos
-        ITT PL
-          BLPL New_line
-          BPL loop
+        BL NAN                                          ; Verifica se a entrada eh um numero, se não for ignora a leitura
+        CMP R7, #1
+        IT EQ
+          BEQ Make_num1
+
+        CMP R10, #4                                      ; verefica se r3 tem menos de 4 digitos
+        IT PL
+          BLPL Wait_for_operation
+        
+        BL Serial_write
         ITTT LO
           BLLO Make_number                              ; r6 = r3*10+r1 // R10++
           MOVLO R3, R6                                  ; r3 = r6
           BLO Make_num1
+          
+Wait_for_operation:
+        BL Serial_read
+        CMP R1, #61
+        ITTT EQ
+          BLEQ Calculate                                ; calcula o valor de R3 e R5 com a operação contida em R4                            
+          BLEQ New_line                                 ; e imprimi na tela
+          BEQ loop
+
+        CMP R1, #67                                    ; se a entrada for C finaliza a operação
+        ITTT EQ
+          BLEQ Serial_write
+          BLEQ New_line
+          BEQ loop
+          
+        BL Check_operation                              ; verefica se está recebendo um operando                               
+        CMP R4, #0                                      ; se estiver, salva em r4 e vai para Make_num2
+        ITTT HI                                         
+          MOVHI R10, #0
+          BLHI Serial_write
+          BHI Make_num2
+        B Wait_for_operation
 
 Make_num2:
-        CMP R10, #4
-        ITTT PL
+        CMP R10, #4                                     ; Se o segundo numero ja tiver 4 digitos o usuario
+        ITTT PL                                         ; nao precisa digitar igual
           BLPL Calculate
           BLPL New_line
           BPL loop
 
         BL Serial_read
         MOV R6, R5
-        
+
         CMP R1, #61
         ITTT EQ
-                                                        ; todo: fazerr função para inprimir numero usando div
-          BLEQ Calculate                                ; Dentro da func que printa o resutado
+          BLEQ Calculate                                ; calcula o valor de R3 e R5 com a operação contida em R4                            
+          BLEQ New_line                                 ; e imprimi na tela
+          BEQ loop
+
+        CMP R1, #67                                    ; se a entrada for C finaliza a operação
+        ITTT EQ
+          BLEQ Serial_write
           BLEQ New_line
           BEQ loop
-          
-        ;; TODO: EVITAR NOVAS OPERAÇÕES
-          
+        
+        BL NAN                                          ; Verifica se a entrada eh um numero, se não for ignora a leitura
+        CMP R7, #1
+        IT EQ
+          BEQ Make_num2
+
         CMP R10, #4                                      ; menor que 4 digitos
         ITTTT LO
           BLLO Serial_write
@@ -157,8 +188,9 @@ Make_num2:
           BLO Make_num2
 
         B loop  
-
 ;===============================================================================;
+;                       Le a serial e salva o valor em R1                       ;
+;                       -> Aux: R2                                              ;
 ;===============================================================================;
 Serial_read:
         LDR R2, [R0, #UART_FR]                          ; status da UART
@@ -167,6 +199,8 @@ Serial_read:
         LDR R1, [R0]                                    ; Le a resial e joga em R1
         BX LR
 ;===============================================================================;
+;                       Escreve na serial o valor contido em R1                 ;
+;                       -> Aux: R2                                              ;
 ;===============================================================================;
 Serial_write:    
         LDR R2, [R0, #UART_FR]                          ; status da UART
@@ -175,7 +209,6 @@ Serial_write:
         
         STR R1, [R0]                                    ; escreve no registrador de dados da UART0 (transmite)
         BX LR
-
 ;===============================================================================;
 ;                  -> Habilita UART que estiver no registrador R2               ;
 ;                  -> Input: R2                                                 ;
@@ -196,7 +229,6 @@ return_UART_enable
         POP {R1}
         POP {R0}
         BX LR
-
 ;===============================================================================;
 ;                  -> Configuracao da UART que estiver no registrador R2        ;
 ;                  -> Input: R2                                                 ;
@@ -208,19 +240,19 @@ UART_config:
         BIC R1, #0x01                                   ; desabilita UART (bit UARTEN = 0)
         STR R1, [R2, #UART_CTL]                         ; [R2, #UART_CTL] = R1
 
-        ; clock = 16MHz, baud rate = 9600 bps
-        MOV R1, #69                                    ; R1 = #69
+        ; clock = 16MHz, baud rate = 14400 bps
+        MOV R1, #69                                     ; R1 = #69
         STR R1, [R2, #UART_IBRD]                        ; [R2, #UART_IBRD] = R1
         MOV R1, #29                                     ; R1 = #29
         STR R1, [R2, #UART_FBRD]                        ; [R2, #UART_FBRD] = R1
         
-        ; 8 bits, 1 stop, no parity, FIFOs disabled, no interrupts
-        MOV R1, #0x60                                   ; R1 = #0x60
-        STR R1, [R2, #UART_LCRH]                        ; [R2, #UART_LCRH] = R1
+        ; 7 bits, 1 stop, with parity, FIFOs disabled, no interrupts                                 ; R1 = #0x60
+        MOV R1, #01000110b
+        STR R1, [R2, #UART_LCRH]                        ; [R2 + #UART_LCRH] = R1
         
         ; clock source = system clock
         MOV R1, #0x00                                   ; R1 = #0x00   
-        STR R1, [R2, #UART_CC]                          ; [R2, #UART_CC] = R1
+        STR R1, [R2, #UART_CC]                          ; [R2 + #UART_CC] = R1
         
         LDR R1, [R2, #UART_CTL]                         ; R1 = [R2, #UART_CTL] 
         ORR R1, #0x01                                   ; R1 = R1 OU R0 -> habilita UART (bit UARTEN = 1)
@@ -228,7 +260,6 @@ UART_config:
         
         POP {R1}
         BX LR
-
 ;===============================================================================;
 ;                -> Habilita a função especial do GPIO no registrador R0        ;
 ;                -> Input: R0, R1                                               ;
@@ -246,7 +277,6 @@ GPIO_special:
 
         POP {R2}
         BX LR
-
 ;===============================================================================;
 ;                -> Seleciona a função especial do GPIO no registrador R0       ;
 ;                -> Input: R0, R1                                               ;
@@ -260,7 +290,6 @@ GPIO_select:
 	STR R3, [R0, #GPIO_PCTL]
         POP {R3}
         BX LR
-
 ;===============================================================================;
 ;                  -> Habilita o GPIO que estiver na porta R0                   ;
 ;                  -> Input: R0                                                 ;
@@ -277,16 +306,14 @@ check
         LDR R1, [R2]                                    ; carrega o valor que R2 "aponta" em R1
         TST R1, R0                                      ; verifica se o clock esta ativo
         BEQ check                                       ; se ainda nao estiver ativo volta para check
-
 return_Enable_port
         POP {R2}
         POP {R1}
-        BX LR                                           ; se estiver volta para chamada
-
+        BX LR
 ;===============================================================================;
-;       recebe um numero base + um numero para colocar no final   
-;       R1-> CONTEM O PROXIMO NUMERO
-;       R6-> recebe r3 ou r4
+;     Recebe um numero base + um numero para colocar no final, salva em R6      ;
+;     Input -> R1, R6                                                           ;
+;     Aux -> R7, R8                                                             ;
 ;===============================================================================;
 Make_number:
         PUSH {R7, R8}
@@ -298,11 +325,10 @@ Make_number:
         ADD R10, R10, #1
         POP {R7, R8}
         BX LR
-
 ;===============================================================================;
-;               -> Printa na serial o valor contido em r1                                              
-;               -> r7, r8 E r9 como aux PARA OPERAÇÕES
-;               -> 
+;               -> Printa na serial o valor contido em R1                       ;
+;               -> Input: R1, R11                                               ;
+;               -> Aux: R7, R8 e R9                                             ;
 ;===============================================================================;
 Show_result:
         PUSH {LR}
@@ -312,29 +338,27 @@ Show_result:
         PUSH {R7}                                       ; aplica na pilha o stop  
         MOV R7, #10
 
-        CMP R11, #2
+        CMP R11, #2                                     ; R11 == 2 -> Div por zero
         ITTT EQ
           MOVEQ R1, #69                                 ; Em hexa - 'E' (0x45) eh sem graça
           PUSHEQ {R1}
           BEQ Print_result
-        
-        CMP R11, #1                                     ; compara com a flag
+
+        CMP R11, #1                                     ; R11 == 1 -> numero negativo
         ITTTT EQ
           PUSHEQ {R1}
-          MOVEQ R1, #45                                 ; printa '-'
+          MOVEQ R1, #45
           BLEQ Serial_write
           POPEQ {R1}
-        
-        CMP R1, #0
-        ITTT EQ
-        ADDEQ R1, R1, #0x30
-        PUSHEQ {R1}
+
+        CMP R1, #0                                      ; Se resultado igual a zero nao tem 
+        ITTT EQ                                         ; pq decompor o numero
+          ADDEQ R1, R1, #0x30
+          PUSHEQ {R1}
+          BEQ Print_result
+Decomposition:                                          ; Pega o resto da divisao por 10
+        CMP R1, #0                                      ; e joga na pilha
         BEQ Print_result
-        
-Decomposition:
-        CMP R1, #0
-        BEQ Print_result
-        
         UDIV R8, R1, R7
         MUL R9, R8, R7 
         SUB R9, R1, R9
@@ -342,21 +366,18 @@ Decomposition:
         PUSH {R9}
         MOV R1, R8
         B Decomposition
-
-Print_result
-        POP {R1}
-        CMP R1, #0xaa
+Print_result                                            ; Tira numero a numero da pilha
+        POP {R1}                                        ; ate chegar no 0xaa e vai 
+        CMP R1, #0xaa                                   ; mostrando na tela
         IT EQ
         BEQ End_show_result
         BL Serial_write
         B Print_result
-
 End_show_result:
         POP {R7, R8}
         POP {PC}
-
 ;===============================================================================;
-;                                             
+;                         Gera nova linha na serial                             ;                                    
 ;===============================================================================;
 New_line:
         PUSH {R1, LR}
@@ -365,9 +386,8 @@ New_line:
         MOV R1, #13
         BL Serial_write
         POP {R1, PC}
-
 ;===============================================================================;
-;               -> Reseta todas as variáveis do ambiente                                           
+;               -> Reseta todas as variáveis do ambiente                        ;                                      
 ;===============================================================================;
 Reset_all:
        MOV R1, #0
@@ -380,43 +400,40 @@ Reset_all:
        MOV R11, #0
        BX LR
 ;===============================================================================;
-;               -> Reseta todas as variáveis do ambiente                                           
+;               -> Verefica se a entrada é uma eperacao valida                  ;
+;               -> Output: R4                                                   ; 
 ;===============================================================================;
 Check_operation:
         CMP R1, #42                             ; MULTIPICACAO
-        ITT EQ
-          MOVEQ R2, #0
+        IT EQ                                   ; MOVEQ R2, #0
           MOVEQ R4, #1
-          
+
         CMP R1, #43                             ; SOMA
-        ITT EQ
-          MOVEQ R2, #0
+        IT EQ
           MOVEQ R4, #2
           
         CMP R1, #45                             ; SUB
-        ITT EQ
-          MOVEQ R2, #0
+        IT EQ
           MOVEQ R4, #3
           
         CMP R1, #47                             ; DIV
-        ITT EQ
-          MOVEQ R2, #0
+        IT EQ
           MOVEQ R4, #4
         BX LR
 ;===============================================================================;
-;               -> axecuta a operação de r4 entre r3 e r5                                            
-;               -> resposta da operação fica em r1
+;       Realiza a operação contida em R4 entre R3 e R5, salva em R1             ;
+;       -> Input: R4, R3, R5                                                    ;
 ;===============================================================================;
 Calculate
         PUSH {LR}
-        
+
         MOV R1, #61
         BL Serial_write
-        
+
         CMP R4, #1                             ; MULTIPICACAO
         IT EQ
           MULEQ R1, R3, R5
-          
+
         CMP R4, #2                             ; SOMA
         IT EQ
           ADDEQ R1, R3, R5
@@ -424,16 +441,17 @@ Calculate
         CMP R4, #3                             ; SUB
         IT EQ
           BLEQ Execute_sub
-          
+
         CMP R4, #4                             ; DIV
         IT EQ
           BLEQ Execute_div
 
         BL Show_result
 
-        POP {PC}
-        
+        POP {PC}   
 ;===============================================================================;
+;     Executa subtracao entre R3 e R5, salva em R1. Se negativo R11 = 1         ;
+;     Input: R3, R5                                                             ;
 ;===============================================================================;
 Execute_sub:  
         SUBS R1, R3, R5
@@ -442,8 +460,9 @@ Execute_sub:
           MVNMI R1, R1
           ADDMI R1, R1, #1
         BX LR
-     
 ;===============================================================================;
+;     Executa divisao entre R3 e R5, salva em R1. Se invalida R11 = 2           ;
+;     Input: R3, R5                                                             ;
 ;===============================================================================;
 Execute_div:
         UDIV R1, R3, R5
@@ -451,6 +470,18 @@ Execute_div:
         IT EQ
           MOVEQ R11, #2
         BX LR
+;===============================================================================;
+;                Verifica se o input eh um numero ou nao                        ;
+;                Input: R1                                                      ;
+;===============================================================================;
+NAN:
+        MOV R7, #0
+        CMP R1, #0x30
+        IT LO
+          MOVLO R7, #1
+        CMP R1, #0x39
+        IT HI
+          MOVHI R7, #1
+        BX LR
 
-      
         END

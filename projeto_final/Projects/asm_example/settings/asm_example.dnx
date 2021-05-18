@@ -16,7 +16,7 @@
         <ShowSource>1</ShowSource>
     </Trace1>
     <DebugChecksum>
-        <Checksum>2244487940</Checksum>
+        <Checksum>448187991</Checksum>
     </DebugChecksum>
     <SfrWindow>
         <Show>1 1</Show>
@@ -80,11 +80,11 @@
         <regBase0>R3 10</regBase0>
         <regBase1>R5 10</regBase1>
         <regBase2>R6 10</regBase2>
-        <regBase3>R1 10</regBase3>
-        <regBase4>R8 10</regBase4>
-        <regBase5>R9 10</regBase5>
-        <regBase6>R7 10</regBase6>
-        <regBase7>R4 10</regBase7>
+        <regBase3>R8 10</regBase3>
+        <regBase4>R9 10</regBase4>
+        <regBase5>R7 10</regBase5>
+        <regBase6>R4 10</regBase6>
+        <regBase7>R2 10</regBase7>
     </Registers>
     <DisassembleMode>
         <mode>0</mode>
@@ -92,6 +92,10 @@
     <Breakpoints>
         <Count>0</Count>
     </Breakpoints>
+    <TermIOLog>
+        <LoggingEnabled>_ 0</LoggingEnabled>
+        <LogFile>_ ""</LogFile>
+    </TermIOLog>
     <LogFile>
         <LoggingEnabled>_ 0</LoggingEnabled>
         <LogFile>_ ""</LogFile>
@@ -107,8 +111,4 @@
     <CallStackStripe>
         <ShowTiming>1</ShowTiming>
     </CallStackStripe>
-    <TermIOLog>
-        <LoggingEnabled>_ 0</LoggingEnabled>
-        <LogFile>_ ""</LogFile>
-    </TermIOLog>
 </settings>
