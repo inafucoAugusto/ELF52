@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR ELF Linker V8.50.9.278/W32 for ARM                  18/May/2021  08:37:18
+# IAR ELF Linker V8.50.9.278/W32 for ARM                  20/May/2021  09:16:13
 # Copyright 2007-2020 IAR Systems AB.
 #
 #    Output file  =
@@ -8,7 +8,7 @@
 #    Map file     =
 #        D:\Facul\Micro\ELF52\projeto_final\Projects\asm_example\Debug\List\asm_example.map
 #    Command line =
-#        -f C:\Users\USURIO~2\AppData\Local\Temp\EW27B9.tmp
+#        -f C:\Users\USURIO~2\AppData\Local\Temp\EW7FBE.tmp
 #        (D:\Facul\Micro\ELF52\projeto_final\Projects\asm_example\Debug\Obj\asm_example.o
 #        D:\Facul\Micro\ELF52\projeto_final\Projects\asm_example\Debug\Obj\startup_TM4C1294.o
 #        --no_out_extension -o
@@ -45,10 +45,10 @@ No sections matched the following patterns:
   .intvec   ro code          0x0   0x3c0  startup_TM4C1294.o [1]
                          - 0x3c0   0x3c0
 
-"P1":                              0x306
-  .text     ro code        0x3c0   0x304  asm_example.o [1]
-  .text     ro code        0x6c4     0x2  startup_TM4C1294.o [1]
-                         - 0x6c6   0x306
+"P1":                              0x312
+  .text     ro code        0x3c0   0x310  asm_example.o [1]
+  .text     ro code        0x6d0     0x2  startup_TM4C1294.o [1]
+                         - 0x6d2   0x312
 
 "P2":                             0x8000
   CSTACK             0x2000'0000  0x8000  <Block>
@@ -59,7 +59,7 @@ Unused ranges:
 
          From           To      Size
          ----           --      ----
-        0x6c6     0xf'ffff  0xf'f93a
+        0x6d2     0xf'ffff  0xf'f92e
   0x2000'8000  0x2003'ffff  0x3'8000
 
 
@@ -75,14 +75,14 @@ command line/config:
     Total:
 
 D:\Facul\Micro\ELF52\projeto_final\Projects\asm_example\Debug\Obj: [1]
-    asm_example.o           772
+    asm_example.o           784
     startup_TM4C1294.o      962
     ------------------------------------
-    Total:                1'734
+    Total:                1'746
 
     Linker created                32'768
 ----------------------------------------
-    Grand Total:          1'734   32'768
+    Grand Total:          1'746   32'768
 
 
 *******************************************************************************
@@ -103,7 +103,7 @@ __vector_table_0x1c          0x1c        Data  Gb  startup_TM4C1294.o [1]
 
 [1] = D:\Facul\Micro\ELF52\projeto_final\Projects\asm_example\Debug\Obj
 
-   1'734 bytes of readonly  code memory
+   1'746 bytes of readonly  code memory
   32'768 bytes of readwrite data memory
 
 Errors: none

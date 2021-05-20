@@ -95,6 +95,10 @@ main:
 loop:
         BL Reset_all
 Make_num1:
+        CMP R10, #4                                      ; verefica se r3 tem menos de 4 digitos
+        IT PL
+          BLPL Wait_for_operation
+
         BL Serial_read                                  ; le a serial e salva o valor em r1
         MOV R6, R3                                      ; r6 = r3
         
@@ -121,9 +125,7 @@ Make_num1:
         IT EQ
           BEQ Make_num1
 
-        CMP R10, #4                                      ; verefica se r3 tem menos de 4 digitos
-        IT PL
-          BLPL Wait_for_operation
+        ; bla
         
         BL Serial_write
         ITTT LO
@@ -134,8 +136,12 @@ Make_num1:
 Wait_for_operation:
         BL Serial_read
         CMP R1, #61
-        ITTT EQ
-          BLEQ Calculate                                ; calcula o valor de R3 e R5 com a operação contida em R4                            
+        IT EQ
+          BLEQ Serial_write
+        CMP R1, #61
+        ITTTT EQ
+          MOVEQ R1, R3                                ; calcula o valor de R3 e R5 com a operação contida em R4                            
+          BLEQ Show_result
           BLEQ New_line                                 ; e imprimi na tela
           BEQ loop
 
